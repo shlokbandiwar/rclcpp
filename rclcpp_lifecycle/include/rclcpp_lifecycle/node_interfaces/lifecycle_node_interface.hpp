@@ -53,25 +53,29 @@ protected:
   LifecycleNodeInterface() {}
 
 public:
-  enum class CallbackReturn : uint8_t
-  {
-    SUCCESS = lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS,
-    FAILURE = lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_FAILURE,
-    ERROR = lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_ERROR
-  };
 
-  /// Callback function for configure transition
-  /*
-   * \return SUCCESS by default
-   */
-  RCLCPP_LIFECYCLE_PUBLIC
-  virtual CallbackReturn
-  on_configure(const State & previous_state);
+enum class CallbackReturn : uint8_t
+{
+  /// The callback completed successfully and the transition can proceed.
+  SUCCESS = lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS,
 
-  /// Callback function for cleanup transition
-  /*
-   * \return SUCCESS by default
-   */
+  /// The callback did not succeed, and the transition will not proceed.
+  /// The node remains in its current state.
+  FAILURE = lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_FAILURE,
+
+  /// An error occurred during the callback execution.
+  /// The node may transition to an error handling state.
+  ERROR = lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_ERROR,
+};
+
+/// Callback function for configure transition
+/*
+ * \return SUCCESS by default
+ */
+RCLCPP_LIFECYCLE_PUBLIC
+virtual CallbackReturn
+on_configure(const State & previous_state);
+  
   RCLCPP_LIFECYCLE_PUBLIC
   virtual CallbackReturn
   on_cleanup(const State & previous_state);
